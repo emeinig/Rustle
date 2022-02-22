@@ -2,10 +2,9 @@ use tui::backend::Backend;
 use tui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
-use tui::widgets::{Block, BorderType, Borders, Cell, Paragraph, Row, Table};
+use tui::widgets::{Block, BorderType, Borders, Paragraph};
 use tui::Frame;
 
-use super::actions::Actions;
 use super::state::AppState;
 use crate::app::App;
 
@@ -26,21 +25,21 @@ where
     let title = draw_title();
     rect.render_widget(title, chunks[0]);
 
-    // Body & Help
+    // Guess Area & Keyboard
     let body_chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints([Constraint::Min(20), Constraint::Length(32)].as_ref())
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(chunks[1]);
 
-    let body = draw_body(app.is_loading(), app.state());
-    rect.render_widget(body, body_chunks[0]);
+    let guess_area = draw_guess_area(app.is_loading(), app.state());
+    rect.render_widget(guess_area, body_chunks[0]);
 
-    let help = draw_help(app.actions());
-    rect.render_widget(help, body_chunks[1]);
+    let keyboard_area = draw_keyboard_area();
+    rect.render_widget(keyboard_area, body_chunks[1]);
 }
 
 fn draw_title<'a>() -> Paragraph<'a> {
-    Paragraph::new("Plop with TUI")
+    Paragraph::new("Rustle")
         .style(Style::default().fg(Color::LightCyan))
         .alignment(Alignment::Center)
         .block(
@@ -60,69 +59,35 @@ fn check_size(rect: &Rect) {
     }
 }
 
-fn draw_body<'a>(loading: bool, state: &AppState) -> Paragraph<'a> {
+fn draw_guess_area<'a>(loading: bool, state: &AppState) -> Paragraph<'a> {
     let initialized_text = if state.is_initialized() {
         "Initialized"
     } else {
         "Not Initialized !"
     };
     let loading_text = if loading { "Loading..." } else { "" };
-    let sleep_text = if let Some(sleeps) = state.count_sleep() {
-        format!("Sleep count: {}", sleeps)
-    } else {
-        String::default()
-    };
-    let tick_text = if let Some(ticks) = state.count_tick() {
-        format!("Tick count: {}", ticks)
-    } else {
-        String::default()
-    };
+
     Paragraph::new(vec![
         Spans::from(Span::raw(initialized_text)),
         Spans::from(Span::raw(loading_text)),
-        Spans::from(Span::raw(sleep_text)),
-        Spans::from(Span::raw(tick_text)),
+        Spans::from(Span::raw("GUESS AREA"))
     ])
     .style(Style::default().fg(Color::LightCyan))
     .alignment(Alignment::Left)
     .block(
         Block::default()
-            // .title("Body")
             .borders(Borders::ALL)
             .style(Style::default().fg(Color::White))
             .border_type(BorderType::Plain),
     )
 }
 
-fn draw_help(actions: &Actions) -> Table {
-    let key_style = Style::default().fg(Color::LightCyan);
-    let help_style = Style::default().fg(Color::Gray);
-
-    let mut rows = vec![];
-    for action in actions.actions().iter() {
-        let mut first = true;
-        for key in action.keys() {
-            let help = if first {
-                first = false;
-                action.to_string()
-            } else {
-                String::from("")
-            };
-            let row = Row::new(vec![
-                Cell::from(Span::styled(key.to_string(), key_style)),
-                Cell::from(Span::styled(help, help_style)),
-            ]);
-            rows.push(row);
-        }
-    }
-
-    Table::new(rows)
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .border_type(BorderType::Plain)
-                .title("Help"),
-        )
-        .widths(&[Constraint::Length(11), Constraint::Min(20)])
-        .column_spacing(1)
+fn draw_keyboard_area<'a>() -> Block<'a> {
+    Block::default()
+        .title(vec![
+            Span::styled("Keyboard Area", Style::default().fg(Color::Yellow)),
+        ])
+        .borders(Borders::ALL)
+        .style(Style::default().fg(Color::White))
+        .border_type(BorderType::Plain)
 }
