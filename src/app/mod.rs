@@ -47,6 +47,24 @@ impl App {
             debug!("Run action [{:?}]", action);
             match action {
                 Action::Quit => AppReturn::Exit,
+                Action::Edit => {
+                    if let Key::Char(character) = key {
+                        self.state.input.push(character);
+                    }
+
+                    AppReturn::Continue
+                }
+                Action::Submit => {
+                    let word = self.state.input.drain(..).collect();
+                    self.state.guesses.push(word);
+                    AppReturn::Continue
+                }
+                Action::Backspace => {
+                    self.state.input.pop();
+
+                    println!("{}", self.state.input);
+                    AppReturn::Continue
+                }
                 Action::Sleep => {
                     AppReturn::Continue
                 }
@@ -85,7 +103,7 @@ impl App {
 
     pub fn initialized(&mut self) {
         // Update contextual actions
-        self.actions = vec![Action::Quit, Action::Sleep].into();
+        self.actions = vec![Action::Quit, Action::Sleep, Action::Backspace, Action::Submit, Action::Edit].into();
         self.state = AppState::new()
     }
 

@@ -9,20 +9,53 @@ use crate::inputs::key::Key;
 pub enum Action {
     Quit,
     Sleep,
+    Edit,
+    Backspace,
+    Submit
 }
 
 impl Action {
     /// All available actions
     pub fn iterator() -> Iter<'static, Action> {
-        static ACTIONS: [Action; 2] = [Action::Quit, Action::Sleep];
+        static ACTIONS: [Action; 5] = [Action::Quit, Action::Edit, Action::Backspace, Action::Submit, Action::Sleep];
         ACTIONS.iter()
     }
 
     /// List of key associated to action
     pub fn keys(&self) -> &[Key] {
         match self {
-            Action::Quit => &[Key::Ctrl('c'), Key::Char('q')],
-            Action::Sleep => &[Key::Char('s')],
+            Action::Quit => &[Key::Ctrl('c'), Key::Esc],
+            Action::Sleep => &[Key::Ctrl('s')],
+            Action::Submit => &[Key::Enter],
+            Action::Backspace => &[Key::Backspace],
+            Action::Edit => &[
+                Key::Char('a'),
+                Key::Char('b'),
+                Key::Char('c'),
+                Key::Char('d'),
+                Key::Char('e'),
+                Key::Char('f'),
+                Key::Char('g'),
+                Key::Char('h'),
+                Key::Char('i'),
+                Key::Char('j'),
+                Key::Char('k'),
+                Key::Char('l'),
+                Key::Char('m'),
+                Key::Char('n'),
+                Key::Char('o'),
+                Key::Char('p'),
+                Key::Char('q'),
+                Key::Char('r'),
+                Key::Char('s'),
+                Key::Char('t'),
+                Key::Char('u'),
+                Key::Char('v'),
+                Key::Char('w'),
+                Key::Char('x'),
+                Key::Char('y'),
+                Key::Char('z')
+            ],
         }
     }
 }
@@ -33,6 +66,9 @@ impl Display for Action {
         let str = match self {
             Action::Quit => "Quit",
             Action::Sleep => "Sleep",
+            Action::Submit => "Submit Guess",
+            Action::Backspace => "Delete",
+            Action::Edit => ""
         };
         write!(f, "{}", str)
     }
@@ -46,7 +82,6 @@ impl Actions {
     /// Given a key, find the corresponding action
     pub fn find(&self, key: Key) -> Option<&Action> {
         Action::iterator()
-            .filter(|action| self.0.contains(action))
             .find(|action| action.keys().contains(&key))
     }
 
