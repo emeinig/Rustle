@@ -28,8 +28,7 @@ impl IoAsyncHandler {
             error!("Oops, something wrong happen: {:?}", err);
         }
 
-        let mut app = self.app.lock().await;
-        app.loaded();
+        let _app = self.app.lock().await;
     }
 
     /// We use dummy implementation here, just wait 1s
@@ -49,8 +48,7 @@ impl IoAsyncHandler {
         tokio::time::sleep(duration).await;
         info!("⏰ Wake up !");
         // Notify the app for having slept
-        let mut app = self.app.lock().await;
-        app.sleeped();
+        let _app = self.app.lock().await;
 
         Ok(())
     }

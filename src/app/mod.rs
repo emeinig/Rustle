@@ -48,10 +48,6 @@ impl App {
             match action {
                 Action::Quit => AppReturn::Exit,
                 Action::Sleep => {
-                    if let Some(duration) = self.state.duration().cloned() {
-                        // Sleep is an I/O action, we dispatch on the IO channel that's run on another thread
-                        self.dispatch(IoEvent::Sleep(duration)).await
-                    }
                     AppReturn::Continue
                 }
             }
@@ -63,8 +59,6 @@ impl App {
 
     /// We could update the app or dispatch event on tick
     pub async fn update_on_tick(&mut self) -> AppReturn {
-        // here we just increment a counter
-        self.state.incr_tick();
         AppReturn::Continue
     }
 
@@ -92,14 +86,7 @@ impl App {
     pub fn initialized(&mut self) {
         // Update contextual actions
         self.actions = vec![Action::Quit, Action::Sleep].into();
-        self.state = AppState::initialized()
+        self.state = AppState::new()
     }
 
-    pub fn loaded(&mut self) {
-        self.is_loading = false;
-    }
-
-    pub fn sleeped(&mut self) {
-        self.state.incr_sleep();
-    }
 }

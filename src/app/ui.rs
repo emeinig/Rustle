@@ -60,16 +60,7 @@ fn check_size(rect: &Rect) {
 }
 
 fn draw_guess_area<'a>(loading: bool, state: &AppState) -> Paragraph<'a> {
-    let initialized_text = if state.is_initialized() {
-        "Initialized"
-    } else {
-        "Not Initialized !"
-    };
-    let loading_text = if loading { "Loading..." } else { "" };
-
     Paragraph::new(vec![
-        Spans::from(Span::raw(initialized_text)),
-        Spans::from(Span::raw(loading_text)),
         Spans::from(Span::raw("GUESS AREA"))
     ])
     .style(Style::default().fg(Color::LightCyan))
