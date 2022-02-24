@@ -2,7 +2,7 @@ use tui::backend::Backend;
 use tui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
-use tui::widgets::{Block, BorderType, Borders, Paragraph};
+use tui::widgets::{Block, BorderType, Borders, Paragraph, List, ListItem};
 use tui::Frame;
 
 use super::state::AppState;
@@ -31,7 +31,7 @@ where
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(chunks[1]);
 
-    let guess_area = draw_guess_area(app.is_loading(), app.state());
+    let guess_area = draw_guess_area(app.state());
     rect.render_widget(guess_area, body_chunks[0]);
 
     let keyboard_area = draw_keyboard_area();
@@ -59,12 +59,19 @@ fn check_size(rect: &Rect) {
     }
 }
 
-fn draw_guess_area<'a>(loading: bool, state: &AppState) -> Paragraph<'a> {
-    Paragraph::new(vec![
-        Spans::from(Span::raw("GUESS AREA"))
-    ])
+fn draw_guess_area<'a>(state: &'a AppState) -> List<'a> {
+    let guesses: Vec<ListItem> = state
+        .guesses
+        .iter()
+        .map(|guess| {
+            let content = vec![Spans::from(Span::raw(guess))];
+            ListItem::new(content)
+        })
+        .collect();
+
+    List::new(guesses)
     .style(Style::default().fg(Color::LightCyan))
-    .alignment(Alignment::Left)
+    // .alignment(Alignment::Left)
     .block(
         Block::default()
             .borders(Borders::ALL)

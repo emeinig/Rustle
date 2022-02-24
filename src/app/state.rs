@@ -7,7 +7,7 @@ impl Default for AppState {
     fn default() -> Self {
         AppState {
             input: String::new(),
-            guesses: vec![String::from("Hello World!")]
+            guesses: Vec::new()
         }
     }
 }
