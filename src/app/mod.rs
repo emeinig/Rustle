@@ -57,12 +57,12 @@ impl App {
                 Action::Submit => {
                     let word = self.state.input.drain(..).collect();
                     self.state.guesses.push(word);
+
                     AppReturn::Continue
                 }
                 Action::Backspace => {
                     self.state.input.pop();
 
-                    println!("{}", self.state.input);
                     AppReturn::Continue
                 }
                 Action::Sleep => {

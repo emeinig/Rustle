@@ -27,7 +27,7 @@ impl Action {
             Action::Quit => &[Key::Ctrl('c'), Key::Esc],
             Action::Sleep => &[Key::Ctrl('s')],
             Action::Submit => &[Key::Enter],
-            Action::Backspace => &[Key::Backspace],
+            Action::Backspace => &[Key::Backspace, Key::Delete],
             Action::Edit => &[
                 Key::Char('a'),
                 Key::Char('b'),
