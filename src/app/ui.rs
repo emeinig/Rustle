@@ -2,7 +2,7 @@ use tui::backend::Backend;
 use tui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
-use tui::widgets::{Block, BorderType, Borders, Paragraph, List, ListItem};
+use tui::widgets::{Block, BorderType, Borders, List, ListItem, Paragraph};
 use tui::Frame;
 
 use super::state::AppState;
@@ -70,21 +70,22 @@ fn draw_guess_area<'a>(state: &'a AppState) -> List<'a> {
         .collect();
 
     List::new(guesses)
-    .style(Style::default().fg(Color::LightCyan))
-    // .alignment(Alignment::Left)
-    .block(
-        Block::default()
-            .borders(Borders::ALL)
-            .style(Style::default().fg(Color::White))
-            .border_type(BorderType::Plain),
-    )
+        .style(Style::default().fg(Color::LightCyan))
+        // .alignment(Alignment::Left)
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .style(Style::default().fg(Color::White))
+                .border_type(BorderType::Plain),
+        )
 }
 
 fn draw_keyboard_area<'a>() -> Block<'a> {
     Block::default()
-        .title(vec![
-            Span::styled("Keyboard Area", Style::default().fg(Color::Yellow)),
-        ])
+        .title(vec![Span::styled(
+            "Keyboard Area",
+            Style::default().fg(Color::Yellow),
+        )])
         .borders(Borders::ALL)
         .style(Style::default().fg(Color::White))
         .border_type(BorderType::Plain)

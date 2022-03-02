@@ -55,7 +55,7 @@ impl App {
                     AppReturn::Continue
                 }
                 Action::Submit => {
-                    let word= self.state.input.drain(..).collect::<String>();
+                    let word = self.state.input.drain(..).collect::<String>();
 
                     // Because we're only allowing letters (and not any
                     // graphemes), we can get away with just using the len method
@@ -73,9 +73,7 @@ impl App {
 
                     AppReturn::Continue
                 }
-                Action::Sleep => {
-                    AppReturn::Continue
-                }
+                Action::Sleep => AppReturn::Continue,
             }
         } else {
             warn!("No action accociated to {}", key);
@@ -111,8 +109,14 @@ impl App {
 
     pub fn initialized(&mut self) {
         // Update contextual actions
-        self.actions = vec![Action::Quit, Action::Sleep, Action::Backspace, Action::Submit, Action::Edit].into();
+        self.actions = vec![
+            Action::Quit,
+            Action::Sleep,
+            Action::Backspace,
+            Action::Submit,
+            Action::Edit,
+        ]
+        .into();
         self.state = AppState::new()
     }
-
 }

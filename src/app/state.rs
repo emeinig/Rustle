@@ -5,7 +5,7 @@ pub struct AppState {
     pub solution: String,
     pub guesses: Vec<String>,
     pub square_colors: Vec<Vec<Color>>,
-    pub attempt: u8
+    pub attempt: u8,
 }
 
 impl Default for AppState {
@@ -16,7 +16,7 @@ impl Default for AppState {
             solution: String::from("rusty"),
             attempt: 0,
             square_colors: Vec::new(),
-            guesses: Vec::new()
+            guesses: Vec::new(),
         }
     }
 }
@@ -58,13 +58,24 @@ mod tests {
             input: String::from(""),
             solution: String::from("rebus"),
             attempt: 0,
-            square_colors: vec![vec![Color::Yellow, Color::Reset, Color::Yellow, Color::Reset, Color::Yellow]],
-            guesses: vec![String::from("route")]
-
+            square_colors: vec![vec![
+                Color::Yellow,
+                Color::Reset,
+                Color::Yellow,
+                Color::Reset,
+                Color::Yellow,
+            ]],
+            guesses: vec![String::from("route")],
         };
 
         test_state.check_status();
-        let expected_result = vec![Color::Green, Color::Reset, Color::Yellow, Color::Reset, Color::Yellow];
+        let expected_result = vec![
+            Color::Green,
+            Color::Reset,
+            Color::Yellow,
+            Color::Reset,
+            Color::Yellow,
+        ];
 
         assert_eq!(test_state.square_colors.last().unwrap(), &expected_result);
     }

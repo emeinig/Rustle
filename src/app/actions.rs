@@ -11,13 +11,19 @@ pub enum Action {
     Sleep,
     Edit,
     Backspace,
-    Submit
+    Submit,
 }
 
 impl Action {
     /// All available actions
     pub fn iterator() -> Iter<'static, Action> {
-        static ACTIONS: [Action; 5] = [Action::Quit, Action::Edit, Action::Backspace, Action::Submit, Action::Sleep];
+        static ACTIONS: [Action; 5] = [
+            Action::Quit,
+            Action::Edit,
+            Action::Backspace,
+            Action::Submit,
+            Action::Sleep,
+        ];
         ACTIONS.iter()
     }
 
@@ -54,7 +60,7 @@ impl Action {
                 Key::Char('w'),
                 Key::Char('x'),
                 Key::Char('y'),
-                Key::Char('z')
+                Key::Char('z'),
             ],
         }
     }
@@ -68,7 +74,7 @@ impl Display for Action {
             Action::Sleep => "Sleep",
             Action::Submit => "Submit Guess",
             Action::Backspace => "Delete",
-            Action::Edit => ""
+            Action::Edit => "",
         };
         write!(f, "{}", str)
     }
@@ -81,8 +87,7 @@ pub struct Actions(Vec<Action>);
 impl Actions {
     /// Given a key, find the corresponding action
     pub fn find(&self, key: Key) -> Option<&Action> {
-        Action::iterator()
-            .find(|action| action.keys().contains(&key))
+        Action::iterator().find(|action| action.keys().contains(&key))
     }
 
     /// Get contextual actions.
