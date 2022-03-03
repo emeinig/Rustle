@@ -59,18 +59,28 @@ fn check_size(rect: &Rect) {
     }
 }
 
+fn color_squares<'a>(guess: &'a String, colors: &'a Vec<Color>) -> ListItem<'a> {
+    let styled_spans = guess.chars()
+        .zip(colors.iter())
+        .map(|(letter, color)|
+            Span::styled(letter.to_string(), Style::default().bg(*color))
+            )
+        .collect::<Vec<Span>>();
+
+    ListItem::new(Spans::from(styled_spans))
+}
+
 fn draw_guess_area<'a>(state: &'a AppState) -> List<'a> {
-    let guesses: Vec<ListItem> = state
-        .guesses
+    let guesses = state.guesses
         .iter()
-        .map(|guess| {
-            let content = vec![Spans::from(Span::raw(guess))];
-            ListItem::new(content)
+        .zip(state.square_colors.iter())
+        .map(|(guess, square_colors)|{
+            color_squares(&guess, &square_colors)
         })
-        .collect();
+    .collect::<Vec<ListItem>>();
 
     List::new(guesses)
-        .style(Style::default().fg(Color::LightCyan))
+        .style(Style::default().fg(Color::White))
         // .alignment(Alignment::Left)
         .block(
             Block::default()
@@ -89,4 +99,26 @@ fn draw_keyboard_area<'a>() -> Block<'a> {
         .borders(Borders::ALL)
         .style(Style::default().fg(Color::White))
         .border_type(BorderType::Plain)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn color_squares_works() {
+        let guess = String::from("bar");
+        let colors = vec![Color::Red, Color::Green, Color::Blue];
+        let expected_result = ListItem::new(
+            Spans::from(
+            vec![
+            Span::styled("b", Style::default().bg(Color::Red)),
+            Span::styled("a", Style::default().bg(Color::Green)),
+            Span::styled("r", Style::default().bg(Color::Blue)),
+            ]));
+
+        let result = color_squares(&guess, &colors);
+
+        assert_eq!(result, expected_result)
+    }
 }
