@@ -2,10 +2,11 @@ use tui::backend::Backend;
 use tui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
-use tui::widgets::{Block, BorderType, Borders, List, ListItem, Paragraph};
+use tui::widgets::{Block, BorderType, Borders, Clear, List, ListItem, Paragraph};
 use tui::Frame;
 
 use super::state::AppState;
+use super::state::GameStatus;
 use crate::app::App;
 
 pub fn draw<B>(rect: &mut Frame<B>, app: &App)
@@ -36,6 +37,21 @@ where
 
     let keyboard_area = draw_keyboard_area();
     rect.render_widget(keyboard_area, body_chunks[1]);
+
+    let popup_area = centered_rect(60, 20, size);
+    match app.state.game_status {
+        GameStatus::Win => {
+            let paragraph = create_paragraph(format!("You have won! It took {} attempts.\nPress ESC or CTRL+C to exit", app.state.attempt));
+            rect.render_widget(Clear, popup_area); //this clears out the background
+            rect.render_widget(paragraph, popup_area);
+        },
+        GameStatus::Lose => {
+            let paragraph = create_paragraph(format!("You lost. The correct word was \"{}\".\nPress ESC or CTRL+C to exit", app.state.solution));
+            rect.render_widget(Clear, popup_area); //this clears out the background
+            rect.render_widget(paragraph, popup_area);
+        },
+        _ => {}
+    }
 }
 
 fn draw_title<'a>() -> Paragraph<'a> {
@@ -99,6 +115,40 @@ fn draw_keyboard_area<'a>() -> Block<'a> {
         .borders(Borders::ALL)
         .style(Style::default().fg(Color::White))
         .border_type(BorderType::Plain)
+}
+
+/// helper function to create a centered rect using up certain percentage of the available rect `r`
+fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
+    let popup_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints(
+            [
+                Constraint::Percentage((100 - percent_y) / 2),
+                Constraint::Percentage(percent_y),
+                Constraint::Percentage((100 - percent_y) / 2),
+            ]
+            .as_ref(),
+        )
+        .split(r);
+
+    Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints(
+            [
+                Constraint::Percentage((100 - percent_x) / 2),
+                Constraint::Percentage(percent_x),
+                Constraint::Percentage((100 - percent_x) / 2),
+            ]
+            .as_ref(),
+        )
+        .split(popup_layout[1])[1]
+}
+
+fn create_paragraph(text: String) -> Paragraph<'static> {
+    Paragraph::new(text)
+        .style(Style::default().bg(Color::White).fg(Color::Black))
+        .block(Block::default().title("Popup").borders(Borders::ALL))
+        .alignment(Alignment::Center)
 }
 
 #[cfg(test)]

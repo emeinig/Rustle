@@ -6,6 +6,7 @@ pub struct AppState {
     pub guesses: Vec<String>,
     pub square_colors: Vec<Vec<Color>>,
     pub attempt: u8,
+    pub game_status: GameStatus
 }
 
 impl Default for AppState {
@@ -17,6 +18,7 @@ impl Default for AppState {
             attempt: 0,
             square_colors: Vec::new(),
             guesses: Vec::new(),
+            game_status: GameStatus::InProgress
         }
     }
 }
@@ -26,7 +28,19 @@ impl AppState {
         AppState::default()
     }
 
-    pub fn check_status(&mut self) {
+    pub fn game_lost(&mut self) {
+        self.game_status = GameStatus::Lose
+    }
+
+    pub fn game_won(&mut self) {
+        self.game_status = GameStatus::Win
+    }
+
+    pub fn increment_attempt(&mut self) {
+        self.attempt += 1
+    }
+
+    pub fn check_word_status(&mut self) {
         let mut colors = Vec::new();
 
         if let Some(last_guess) = self.guesses.last() {
@@ -46,6 +60,13 @@ impl AppState {
 
         self.square_colors.push(colors)
     }
+}
+
+#[derive(PartialEq)]
+pub enum GameStatus {
+    InProgress,
+    Win,
+    Lose
 }
 
 #[cfg(test)]
@@ -68,7 +89,7 @@ mod tests {
             guesses: vec![String::from("route")],
         };
 
-        test_state.check_status();
+        test_state.check_word_status();
         let expected_result = vec![
             Color::Green,
             Color::Reset,

@@ -63,7 +63,8 @@ impl App {
                     if word.len() == 5 {
                         self.state.guesses.push(word);
 
-                        AppState::check_status(&mut self.state);
+                        AppState::check_word_status(&mut self.state);
+                        AppState::increment_attempt(&mut self.state);
                     }
 
                     AppReturn::Continue
@@ -83,6 +84,16 @@ impl App {
 
     /// We could update the app or dispatch event on tick
     pub async fn update_on_tick(&mut self) -> AppReturn {
+        // Check if we won or lost
+        if let Some(last_guess) = self.state.guesses.last() {
+            if last_guess == &self.state.solution {
+                AppState::game_won(&mut self.state)
+            }
+        }
+
+        if self.state.attempt > 6 {
+            AppState::game_lost(&mut self.state)
+        }
         AppReturn::Continue
     }
 
