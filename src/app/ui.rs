@@ -35,8 +35,9 @@ where
     let guess_area = draw_guess_area(app.state());
     rect.render_widget(guess_area, body_chunks[0]);
 
-    let keyboard_area = draw_keyboard_area();
-    rect.render_widget(keyboard_area, body_chunks[1]);
+    // let keyboard_area = draw_keyboard_area();
+    // rect.render_widget(keyboard_area, body_chunks[1]);
+    draw_squares(rect, app, body_chunks[1]);
 
     let popup_area = centered_rect(60, 20, size);
     match app.state.game_status {
@@ -53,6 +54,56 @@ where
         _ => {}
     }
 }
+
+fn draw_squares<B>(frame: &mut Frame<B>, app: &App, area: Rect)
+where
+    B: Backend,
+{
+    // let paragraph = Paragraph::new("G")
+    //     .style(Style::default().bg(Color::Reset))
+    //     .block(Block::default().borders(Borders::ALL))
+    //     .alignment(Alignment::Center);
+    let horizontal_padding = (area.width - 15)/2;
+
+    // row chunks are 6 rows with a length ("height") of 3 lines
+    let row_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Length(3),
+            Constraint::Length(3),
+            Constraint::Length(3),
+            Constraint::Length(3),
+            Constraint::Length(3),
+            Constraint::Length(3),
+            // Padding for the bottom
+            Constraint::Min(1),
+        ].as_ref())
+        .split(area);
+
+    // We iterate through all of the constraints except the last
+    for i in 0..6 {
+        // column chunks are 5 rows with a length ("width") of 3 lines
+        let col_chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([
+                Constraint::Length(horizontal_padding),
+                Constraint::Length(3),
+                Constraint::Length(3),
+                Constraint::Length(3),
+                Constraint::Length(3),
+                Constraint::Length(3),
+                Constraint::Length(horizontal_padding),
+            ].as_ref())
+            .split(row_chunks[i]);
+
+        // frame.render_widget(Block::default(), col_chunks[0]);
+        for n in 1..6 {
+            frame.render_widget(Paragraph::new(format!("{}", n)).block(Block::default().borders(Borders::ALL)), col_chunks[n]);
+        }
+        // frame.render_widget(Block::default(), col_chunks[6]);
+    }
+}
+
 
 fn draw_title<'a>() -> Paragraph<'a> {
     Paragraph::new("Rustle")
