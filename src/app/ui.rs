@@ -37,8 +37,13 @@ where
 
     draw_squares(rect, app, body_chunks[0]);
 
+    let input = Paragraph::new(app.state.input.as_ref())
+    .style(Style::default())
+    .block(Block::default().borders(Borders::ALL).title("Input"));
+    rect.render_widget(input, body_chunks[1]);
+
     let keyboard_area = draw_keyboard_area();
-    rect.render_widget(keyboard_area, body_chunks[1]);
+    rect.render_widget(keyboard_area, body_chunks[2]);
 
     let popup_area = centered_rect(60, 20, size);
     match app.state.game_status {
