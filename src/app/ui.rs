@@ -59,11 +59,9 @@ fn draw_squares<B>(frame: &mut Frame<B>, app: &App, area: Rect)
 where
     B: Backend,
 {
-    // let paragraph = Paragraph::new("G")
-    //     .style(Style::default().bg(Color::Reset))
-    //     .block(Block::default().borders(Borders::ALL))
-    //     .alignment(Alignment::Center);
     let horizontal_padding = (area.width - 15)/2;
+    let guesses = &app.state.guesses;
+    let square_colors = &app.state.square_colors;
 
     // row chunks are 6 rows with a length ("height") of 3 lines
     let row_chunks = Layout::default()
@@ -96,11 +94,42 @@ where
             ].as_ref())
             .split(row_chunks[i]);
 
-        // frame.render_widget(Block::default(), col_chunks[0]);
+        // We want a word broken into its individual letters for each row
+        let mut letters = if let Some(guess) = guesses.get(i) {
+            guess.chars()
+        } else {
+            // For the rest of the vector that isn't present, we just give a
+            // blank Char with 5 spaces
+            "     ".chars()
+        };
+
+        let mut colors = if let Some(color_vec) = square_colors.get(i) {
+            color_vec.clone()
+        } else {
+            vec![
+                Color::Reset,
+                Color::Reset,
+                Color::Reset,
+                Color::Reset,
+                Color::Reset,
+            ]
+        };
+
         for n in 1..6 {
-            frame.render_widget(Paragraph::new(format!("{}", n)).block(Block::default().borders(Borders::ALL)), col_chunks[n]);
+            let colored_square = if let Some(letter) = letters.next() {
+                Paragraph::new(letter.to_string())
+                .style(Style::default().bg(colors[n-1]))
+                .block(Block::default().borders(Borders::ALL))
+                .alignment(Alignment::Center)
+            } else {
+                Paragraph::new("")
+                .style(Style::default().bg(Color::Reset))
+                .block(Block::default().borders(Borders::ALL))
+                .alignment(Alignment::Center)
+            };
+
+            frame.render_widget(colored_square, col_chunks[n]);
         }
-        // frame.render_widget(Block::default(), col_chunks[6]);
     }
 }
 
