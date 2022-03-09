@@ -1,11 +1,10 @@
 use tui::backend::Backend;
 use tui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
-use tui::text::{Span, Spans};
-use tui::widgets::{Block, BorderType, Borders, Clear, List, ListItem, Paragraph};
+use tui::text::{Span};
+use tui::widgets::{Block, BorderType, Borders, Clear, Paragraph};
 use tui::Frame;
 
-use super::state::AppState;
 use super::state::GameStatus;
 use crate::app::App;
 
@@ -29,15 +28,17 @@ where
     // Guess Area & Keyboard
     let body_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+        .constraints([
+            Constraint::Min(19),
+            Constraint::Length(3),
+            Constraint::Min(1)
+        ].as_ref())
         .split(chunks[1]);
 
-    let guess_area = draw_guess_area(app.state());
-    rect.render_widget(guess_area, body_chunks[0]);
+    draw_squares(rect, app, body_chunks[0]);
 
-    // let keyboard_area = draw_keyboard_area();
-    // rect.render_widget(keyboard_area, body_chunks[1]);
-    draw_squares(rect, app, body_chunks[1]);
+    let keyboard_area = draw_keyboard_area();
+    rect.render_widget(keyboard_area, body_chunks[1]);
 
     let popup_area = centered_rect(60, 20, size);
     match app.state.game_status {
@@ -103,7 +104,7 @@ where
             "     ".chars()
         };
 
-        let mut colors = if let Some(color_vec) = square_colors.get(i) {
+        let colors = if let Some(color_vec) = square_colors.get(i) {
             color_vec.clone()
         } else {
             vec![
@@ -153,37 +154,6 @@ fn check_size(rect: &Rect) {
     if rect.height < 28 {
         panic!("Require height >= 28, (got {})", rect.height);
     }
-}
-
-fn color_squares<'a>(guess: &'a String, colors: &'a Vec<Color>) -> ListItem<'a> {
-    let styled_spans = guess.chars()
-        .zip(colors.iter())
-        .map(|(letter, color)|
-            Span::styled(letter.to_string(), Style::default().bg(*color))
-            )
-        .collect::<Vec<Span>>();
-
-    ListItem::new(Spans::from(styled_spans))
-}
-
-fn draw_guess_area<'a>(state: &'a AppState) -> List<'a> {
-    let guesses = state.guesses
-        .iter()
-        .zip(state.square_colors.iter())
-        .map(|(guess, square_colors)|{
-            color_squares(&guess, &square_colors)
-        })
-    .collect::<Vec<ListItem>>();
-
-    List::new(guesses)
-        .style(Style::default().fg(Color::White))
-        // .alignment(Alignment::Left)
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .style(Style::default().fg(Color::White))
-                .border_type(BorderType::Plain),
-        )
 }
 
 fn draw_keyboard_area<'a>() -> Block<'a> {
