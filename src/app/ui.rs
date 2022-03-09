@@ -8,54 +8,49 @@ use tui::Frame;
 use super::state::GameStatus;
 use crate::app::App;
 
-pub fn draw<B>(rect: &mut Frame<B>, app: &App)
+pub fn draw<B>(frame: &mut Frame<B>, app: &App)
 where
     B: Backend,
 {
-    let size = rect.size();
+    let size = frame.size();
     check_size(&size);
 
-    // Vertical layout
+    // Guess Area & Keyboard
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(3), Constraint::Min(10)].as_ref())
+        .constraints([
+            Constraint::Length(1),
+            Constraint::Length(19),
+            Constraint::Length(3),
+            Constraint::Min(1)
+        ].as_ref())
         .split(size);
 
     // Title
     let title = draw_title();
-    rect.render_widget(title, chunks[0]);
+    frame.render_widget(title, chunks[0]);
 
-    // Guess Area & Keyboard
-    let body_chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Min(19),
-            Constraint::Length(3),
-            Constraint::Min(1)
-        ].as_ref())
-        .split(chunks[1]);
-
-    draw_squares(rect, app, body_chunks[0]);
+    draw_squares(frame, app, chunks[1]);
 
     let input = Paragraph::new(app.state.input.as_ref())
     .style(Style::default())
     .block(Block::default().borders(Borders::ALL).title("Input"));
-    rect.render_widget(input, body_chunks[1]);
+    frame.render_widget(input, chunks[2]);
 
     let keyboard_area = draw_keyboard_area();
-    rect.render_widget(keyboard_area, body_chunks[2]);
+    frame.render_widget(keyboard_area, chunks[3]);
 
     let popup_area = centered_rect(60, 20, size);
     match app.state.game_status {
         GameStatus::Win => {
             let paragraph = create_paragraph(format!("You have won! It took {} attempts.\nPress ESC or CTRL+C to exit", app.state.attempt));
-            rect.render_widget(Clear, popup_area); //this clears out the background
-            rect.render_widget(paragraph, popup_area);
+            frame.render_widget(Clear, popup_area); //this clears out the background
+            frame.render_widget(paragraph, popup_area);
         },
         GameStatus::Lose => {
             let paragraph = create_paragraph(format!("You lost. The correct word was \"{}\".\nPress ESC or CTRL+C to exit", app.state.solution));
-            rect.render_widget(Clear, popup_area); //this clears out the background
-            rect.render_widget(paragraph, popup_area);
+            frame.render_widget(Clear, popup_area); //this clears out the background
+            frame.render_widget(paragraph, popup_area);
         },
         _ => {}
     }
@@ -144,12 +139,6 @@ fn draw_title<'a>() -> Paragraph<'a> {
     Paragraph::new("Rustle")
         .style(Style::default().fg(Color::LightCyan))
         .alignment(Alignment::Center)
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .style(Style::default().fg(Color::White))
-                .border_type(BorderType::Plain),
-        )
 }
 
 fn check_size(rect: &Rect) {
