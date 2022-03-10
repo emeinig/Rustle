@@ -44,7 +44,6 @@ impl App {
     /// Handle a user action
     pub async fn do_action(&mut self, key: Key) -> AppReturn {
         if let Some(action) = self.actions.find(key) {
-            debug!("Run action [{:?}]", action);
             match action {
                 Action::Quit => AppReturn::Exit,
                 Action::Edit => {
@@ -126,6 +125,7 @@ impl App {
             Action::Edit,
         ]
         .into();
+
         self.state = AppState::new()
     }
 }

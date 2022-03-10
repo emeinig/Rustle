@@ -205,7 +205,7 @@ fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
 fn create_paragraph(text: String) -> Paragraph<'static> {
     Paragraph::new(text)
         .style(Style::default().bg(Color::White).fg(Color::Black))
-        .block(Block::default().title("Popup").borders(Borders::ALL))
+        .block(Block::default().borders(Borders::ALL))
         .alignment(Alignment::Center)
 }
 
