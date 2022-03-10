@@ -6,7 +6,7 @@ pub struct AppState {
     pub guesses: Vec<String>,
     pub square_colors: Vec<Vec<Color>>,
     pub attempt: u8,
-    pub game_status: GameStatus
+    pub game_status: GameStatus,
 }
 
 impl Default for AppState {
@@ -18,7 +18,7 @@ impl Default for AppState {
             attempt: 0,
             square_colors: Vec::new(),
             guesses: Vec::new(),
-            game_status: GameStatus::InProgress
+            game_status: GameStatus::InProgress,
         }
     }
 }
@@ -66,7 +66,7 @@ impl AppState {
 pub enum GameStatus {
     InProgress,
     Win,
-    Lose
+    Lose,
 }
 
 #[cfg(test)]

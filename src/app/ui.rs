@@ -1,7 +1,7 @@
 use tui::backend::Backend;
 use tui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
-use tui::text::{Span};
+use tui::text::Span;
 use tui::widgets::{Block, BorderType, Borders, Clear, Paragraph};
 use tui::Frame;
 
@@ -18,12 +18,15 @@ where
     // Guess Area & Keyboard
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(1),
-            Constraint::Length(19),
-            Constraint::Length(3),
-            Constraint::Min(1)
-        ].as_ref())
+        .constraints(
+            [
+                Constraint::Length(1),
+                Constraint::Length(19),
+                Constraint::Length(3),
+                Constraint::Min(1),
+            ]
+            .as_ref(),
+        )
         .split(size);
 
     // Title
@@ -33,8 +36,8 @@ where
     draw_squares(frame, app, chunks[1]);
 
     let input = Paragraph::new(app.state.input.as_ref())
-    .style(Style::default())
-    .block(Block::default().borders(Borders::ALL).title("Input"));
+        .style(Style::default())
+        .block(Block::default().borders(Borders::ALL).title("Input"));
     frame.render_widget(input, chunks[2]);
 
     let keyboard_area = draw_keyboard_area();
@@ -43,15 +46,21 @@ where
     let popup_area = centered_rect(60, 20, size);
     match app.state.game_status {
         GameStatus::Win => {
-            let paragraph = create_paragraph(format!("You have won! It took {} attempts.\nPress ESC or CTRL+C to exit", app.state.attempt));
+            let paragraph = create_paragraph(format!(
+                "You have won! It took {} attempts.\nPress ESC or CTRL+C to exit",
+                app.state.attempt
+            ));
             frame.render_widget(Clear, popup_area); //this clears out the background
             frame.render_widget(paragraph, popup_area);
-        },
+        }
         GameStatus::Lose => {
-            let paragraph = create_paragraph(format!("You lost. The correct word was \"{}\".\nPress ESC or CTRL+C to exit", app.state.solution));
+            let paragraph = create_paragraph(format!(
+                "You lost. The correct word was \"{}\".\nPress ESC or CTRL+C to exit",
+                app.state.solution
+            ));
             frame.render_widget(Clear, popup_area); //this clears out the background
             frame.render_widget(paragraph, popup_area);
-        },
+        }
         _ => {}
     }
 }
@@ -60,23 +69,26 @@ fn draw_squares<B>(frame: &mut Frame<B>, app: &App, area: Rect)
 where
     B: Backend,
 {
-    let horizontal_padding = (area.width - 15)/2;
+    let horizontal_padding = (area.width - 15) / 2;
     let guesses = &app.state.guesses;
     let square_colors = &app.state.square_colors;
 
     // row chunks are 6 rows with a length ("height") of 3 lines
     let row_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(3),
-            Constraint::Length(3),
-            Constraint::Length(3),
-            Constraint::Length(3),
-            Constraint::Length(3),
-            Constraint::Length(3),
-            // Padding for the bottom
-            Constraint::Min(1),
-        ].as_ref())
+        .constraints(
+            [
+                Constraint::Length(3),
+                Constraint::Length(3),
+                Constraint::Length(3),
+                Constraint::Length(3),
+                Constraint::Length(3),
+                Constraint::Length(3),
+                // Padding for the bottom
+                Constraint::Min(1),
+            ]
+            .as_ref(),
+        )
         .split(area);
 
     // We iterate through all of the constraints except the last
@@ -84,15 +96,18 @@ where
         // column chunks are 5 rows with a length ("width") of 3 lines
         let col_chunks = Layout::default()
             .direction(Direction::Horizontal)
-            .constraints([
-                Constraint::Length(horizontal_padding),
-                Constraint::Length(3),
-                Constraint::Length(3),
-                Constraint::Length(3),
-                Constraint::Length(3),
-                Constraint::Length(3),
-                Constraint::Length(horizontal_padding),
-            ].as_ref())
+            .constraints(
+                [
+                    Constraint::Length(horizontal_padding),
+                    Constraint::Length(3),
+                    Constraint::Length(3),
+                    Constraint::Length(3),
+                    Constraint::Length(3),
+                    Constraint::Length(3),
+                    Constraint::Length(horizontal_padding),
+                ]
+                .as_ref(),
+            )
             .split(row_chunks[i]);
 
         // We want a word broken into its individual letters for each row
@@ -119,21 +134,20 @@ where
         for n in 1..6 {
             let colored_square = if let Some(letter) = letters.next() {
                 Paragraph::new(letter.to_string())
-                .style(Style::default().bg(colors[n-1]))
-                .block(Block::default().borders(Borders::ALL))
-                .alignment(Alignment::Center)
+                    .style(Style::default().bg(colors[n - 1]))
+                    .block(Block::default().borders(Borders::ALL))
+                    .alignment(Alignment::Center)
             } else {
                 Paragraph::new("")
-                .style(Style::default().bg(Color::Reset))
-                .block(Block::default().borders(Borders::ALL))
-                .alignment(Alignment::Center)
+                    .style(Style::default().bg(Color::Reset))
+                    .block(Block::default().borders(Borders::ALL))
+                    .alignment(Alignment::Center)
             };
 
             frame.render_widget(colored_square, col_chunks[n]);
         }
     }
 }
-
 
 fn draw_title<'a>() -> Paragraph<'a> {
     Paragraph::new("Rustle")
@@ -203,13 +217,11 @@ mod tests {
     fn color_squares_works() {
         let guess = String::from("bar");
         let colors = vec![Color::Red, Color::Green, Color::Blue];
-        let expected_result = ListItem::new(
-            Spans::from(
-            vec![
+        let expected_result = ListItem::new(Spans::from(vec![
             Span::styled("b", Style::default().bg(Color::Red)),
             Span::styled("a", Style::default().bg(Color::Green)),
             Span::styled("r", Style::default().bg(Color::Blue)),
-            ]));
+        ]));
 
         let result = color_squares(&guess, &colors);
 
