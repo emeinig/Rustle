@@ -43,7 +43,9 @@ where
     let keyboard_area = draw_keyboard_area();
     frame.render_widget(keyboard_area, chunks[3]);
 
-    let popup_area = centered_rect(60, 20, size);
+    // We want the popup to go over the input and keyboard
+    let popup_area = chunks[2].union(chunks[3]);
+
     match app.state.game_status {
         GameStatus::Win => {
             let paragraph = create_paragraph(format!(
@@ -173,33 +175,6 @@ fn draw_keyboard_area<'a>() -> Block<'a> {
         .borders(Borders::ALL)
         .style(Style::default().fg(Color::White))
         .border_type(BorderType::Plain)
-}
-
-/// helper function to create a centered rect using up certain percentage of the available rect `r`
-fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
-    let popup_layout = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage((100 - percent_y) / 2),
-                Constraint::Percentage(percent_y),
-                Constraint::Percentage((100 - percent_y) / 2),
-            ]
-            .as_ref(),
-        )
-        .split(r);
-
-    Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints(
-            [
-                Constraint::Percentage((100 - percent_x) / 2),
-                Constraint::Percentage(percent_x),
-                Constraint::Percentage((100 - percent_x) / 2),
-            ]
-            .as_ref(),
-        )
-        .split(popup_layout[1])[1]
 }
 
 fn create_paragraph(text: String) -> Paragraph<'static> {
