@@ -74,7 +74,6 @@ impl App {
 
                     AppReturn::Continue
                 }
-                Action::Sleep => AppReturn::Continue,
             }
         } else {
             warn!("No action accociated to {}", key);
@@ -122,7 +121,6 @@ impl App {
         // Update contextual actions
         self.actions = vec![
             Action::Quit,
-            Action::Sleep,
             Action::Backspace,
             Action::Submit,
             Action::Edit,

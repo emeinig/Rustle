@@ -8,7 +8,6 @@ use crate::inputs::key::Key;
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Action {
     Quit,
-    Sleep,
     Edit,
     Backspace,
     Submit,
@@ -17,12 +16,11 @@ pub enum Action {
 impl Action {
     /// All available actions
     pub fn iterator() -> Iter<'static, Action> {
-        static ACTIONS: [Action; 5] = [
+        static ACTIONS: [Action; 4] = [
             Action::Quit,
             Action::Edit,
             Action::Backspace,
             Action::Submit,
-            Action::Sleep,
         ];
         ACTIONS.iter()
     }
@@ -31,7 +29,6 @@ impl Action {
     pub fn keys(&self) -> &[Key] {
         match self {
             Action::Quit => &[Key::Ctrl('c'), Key::Esc],
-            Action::Sleep => &[Key::Ctrl('s')],
             Action::Submit => &[Key::Enter],
             Action::Backspace => &[Key::Backspace, Key::Delete],
             Action::Edit => &[
@@ -71,7 +68,6 @@ impl Display for Action {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let str = match self {
             Action::Quit => "Quit",
-            Action::Sleep => "Sleep",
             Action::Submit => "Submit Guess",
             Action::Backspace => "Delete",
             Action::Edit => "",
