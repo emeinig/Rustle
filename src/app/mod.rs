@@ -1,4 +1,4 @@
-use log::{debug, error, warn};
+use log::{error, warn};
 
 use self::actions::Actions;
 use self::state::AppState;
@@ -9,6 +9,7 @@ use crate::io::IoEvent;
 pub mod actions;
 pub mod state;
 pub mod ui;
+pub mod words;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum AppReturn {

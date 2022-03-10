@@ -1,4 +1,5 @@
 use tui::style::Color;
+use crate::app::words;
 
 pub struct AppState {
     pub input: String,
@@ -13,8 +14,7 @@ impl Default for AppState {
     fn default() -> Self {
         AppState {
             input: String::new(),
-            // TODO: Remove hardcoded word
-            solution: String::from("rusty"),
+            solution: words::random_word(),
             attempt: 0,
             square_colors: Vec::new(),
             guesses: Vec::new(),
