@@ -87,12 +87,11 @@ impl App {
         if let Some(last_guess) = self.state.guesses.last() {
             if last_guess == &self.state.solution {
                 AppState::game_won(&mut self.state)
+            } else if self.state.attempt >= 6 {
+                AppState::game_lost(&mut self.state)
             }
         }
 
-        if self.state.attempt > 6 {
-            AppState::game_lost(&mut self.state)
-        }
         AppReturn::Continue
     }
 
