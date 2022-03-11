@@ -2,8 +2,6 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use log::error;
-
 use super::key::Key;
 use super::InputEvent;
 
@@ -31,13 +29,11 @@ impl Events {
                 if crossterm::event::poll(tick_rate).unwrap() {
                     if let crossterm::event::Event::Key(key) = crossterm::event::read().unwrap() {
                         let key = Key::from(key);
-                        if let Err(err) = event_tx.send(InputEvent::Input(key)).await {
-                            error!("Oops!, {}", err);
+                        if let Err(_err) = event_tx.send(InputEvent::Input(key)).await {
                         }
                     }
                 }
-                if let Err(err) = event_tx.send(InputEvent::Tick).await {
-                    error!("Oops!, {}", err);
+                if let Err(_err) = event_tx.send(InputEvent::Tick).await {
                 }
                 if event_stop_capture.load(Ordering::Relaxed) {
                     break;

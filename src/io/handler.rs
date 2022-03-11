@@ -2,7 +2,6 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use eyre::Result;
-use log::{error, info};
 
 use super::IoEvent;
 use crate::app::App;
@@ -23,8 +22,7 @@ impl IoAsyncHandler {
             IoEvent::Initialize => self.do_initialize().await,
         };
 
-        if let Err(err) = result {
-            error!("Oops, something wrong happen: {:?}", err);
+        if let Err(_err) = result {
         }
 
         let _app = self.app.lock().await;
@@ -32,11 +30,9 @@ impl IoAsyncHandler {
 
     /// We use dummy implementation here, just wait 1s
     async fn do_initialize(&mut self) -> Result<()> {
-        info!("🚀 Initialize the application");
         let mut app = self.app.lock().await;
         tokio::time::sleep(Duration::from_secs(1)).await;
         app.initialized(); // we could update the app state
-        info!("👍 Application initialized");
 
         Ok(())
     }

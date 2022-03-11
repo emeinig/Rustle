@@ -1,5 +1,3 @@
-use log::{error, warn};
-
 use self::actions::Actions;
 use self::state::AppState;
 use crate::app::actions::Action;
@@ -76,7 +74,6 @@ impl App {
                 }
             }
         } else {
-            warn!("No action accociated to {}", key);
             AppReturn::Continue
         }
     }
@@ -99,9 +96,8 @@ impl App {
     pub async fn dispatch(&mut self, action: IoEvent) {
         // `is_loading` will be set to false again after the async action has finished in io/handler.rs
         self.is_loading = true;
-        if let Err(e) = self.io_tx.send(action).await {
+        if let Err(_e) = self.io_tx.send(action).await {
             self.is_loading = false;
-            error!("Error from dispatch {}", e);
         };
     }
 
