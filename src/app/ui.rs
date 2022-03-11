@@ -86,8 +86,8 @@ where
 
     // Top row ("qwerty") has 10 keys, so we create 10 columns with a length of 3 and add in some
     // padding
-    let top_row_letters = ["Q","W","E","R","T","Y","U","I","O","P"];
-    let top_row_horizontal_padding = (area.width - 3*10) / 2;
+    let top_row_letters = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
+    let top_row_horizontal_padding = (area.width - 3 * 10) / 2;
     let top_row_col_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints(
@@ -111,8 +111,8 @@ where
 
     // Home row ("asdfg") has 9 keys, so we create 9 columns with a length of 3 and add in some
     // padding
-    let home_row_letters = ["A","S","D","F","G","H","J","K","L"];
-    let home_row_horizontal_padding = (area.width - 3*9) / 2;
+    let home_row_letters = ["A", "S", "D", "F", "G", "H", "J", "K", "L"];
+    let home_row_horizontal_padding = (area.width - 3 * 9) / 2;
     let home_row_col_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints(
@@ -135,8 +135,8 @@ where
 
     // Bottom row has 7 keys, so we create 7 columns with a length of 3 and add in some padding as
     // per usual.
-    let bottom_row_letters = ["Z","X","C","V","B","N","M"];
-    let bottom_row_horizontal_padding = (area.width - 3*7) / 2;
+    let bottom_row_letters = ["Z", "X", "C", "V", "B", "N", "M"];
+    let bottom_row_horizontal_padding = (area.width - 3 * 7) / 2;
     let bottom_row_col_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints(
@@ -156,9 +156,19 @@ where
         .split(row_chunks[2]);
 
     for i in 1..11 {
-        let key_color = app.state.keyboard_colors.get(&top_row_letters[i-1].chars().next().unwrap().to_ascii_lowercase()).unwrap();
+        let key_color = app
+            .state
+            .keyboard_colors
+            .get(
+                &top_row_letters[i - 1]
+                    .chars()
+                    .next()
+                    .unwrap()
+                    .to_ascii_lowercase(),
+            )
+            .unwrap();
 
-        let keys = Paragraph::new(top_row_letters[i-1])
+        let keys = Paragraph::new(top_row_letters[i - 1])
             .style(Style::default().bg(*key_color))
             .block(Block::default().borders(Borders::ALL))
             .alignment(Alignment::Center);
@@ -167,9 +177,19 @@ where
     }
 
     for i in 1..10 {
-        let key_color = app.state.keyboard_colors.get(&home_row_letters[i-1].chars().next().unwrap().to_ascii_lowercase()).unwrap();
+        let key_color = app
+            .state
+            .keyboard_colors
+            .get(
+                &home_row_letters[i - 1]
+                    .chars()
+                    .next()
+                    .unwrap()
+                    .to_ascii_lowercase(),
+            )
+            .unwrap();
 
-        let keys = Paragraph::new(home_row_letters[i-1])
+        let keys = Paragraph::new(home_row_letters[i - 1])
             .style(Style::default().bg(*key_color))
             .block(Block::default().borders(Borders::ALL))
             .alignment(Alignment::Center);
@@ -178,9 +198,19 @@ where
     }
 
     for i in 1..8 {
-        let key_color = app.state.keyboard_colors.get(&bottom_row_letters[i-1].chars().next().unwrap().to_ascii_lowercase()).unwrap();
+        let key_color = app
+            .state
+            .keyboard_colors
+            .get(
+                &bottom_row_letters[i - 1]
+                    .chars()
+                    .next()
+                    .unwrap()
+                    .to_ascii_lowercase(),
+            )
+            .unwrap();
 
-        let keys = Paragraph::new(bottom_row_letters[i-1])
+        let keys = Paragraph::new(bottom_row_letters[i - 1])
             .style(Style::default().bg(*key_color))
             .block(Block::default().borders(Borders::ALL))
             .alignment(Alignment::Center);

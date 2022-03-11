@@ -1,6 +1,6 @@
-use tui::style::Color;
-use std::collections::HashMap;
 use crate::app::words;
+use std::collections::HashMap;
+use tui::style::Color;
 
 pub struct AppState {
     pub input: String,
