@@ -1,4 +1,5 @@
 use tui::style::Color;
+use std::collections::HashMap;
 use crate::app::words;
 
 pub struct AppState {
@@ -6,6 +7,7 @@ pub struct AppState {
     pub solution: String,
     pub guesses: Vec<String>,
     pub square_colors: Vec<Vec<Color>>,
+    pub keyboard_colors: HashMap<char, Color>,
     pub attempt: u8,
     pub game_status: GameStatus,
 }
@@ -19,6 +21,34 @@ impl Default for AppState {
             square_colors: Vec::new(),
             guesses: Vec::new(),
             game_status: GameStatus::InProgress,
+            keyboard_colors: HashMap::from([
+                ('a', Color::Reset),
+                ('b', Color::Reset),
+                ('c', Color::Reset),
+                ('d', Color::Reset),
+                ('e', Color::Reset),
+                ('f', Color::Reset),
+                ('g', Color::Reset),
+                ('h', Color::Reset),
+                ('i', Color::Reset),
+                ('j', Color::Reset),
+                ('k', Color::Reset),
+                ('l', Color::Reset),
+                ('m', Color::Reset),
+                ('n', Color::Reset),
+                ('o', Color::Reset),
+                ('p', Color::Reset),
+                ('q', Color::Reset),
+                ('r', Color::Reset),
+                ('s', Color::Reset),
+                ('t', Color::Reset),
+                ('u', Color::Reset),
+                ('v', Color::Reset),
+                ('w', Color::Reset),
+                ('x', Color::Reset),
+                ('y', Color::Reset),
+                ('z', Color::Reset),
+            ]),
         }
     }
 }
@@ -49,10 +79,22 @@ impl AppState {
                 let guess_letter = last_guess.chars().nth(i);
 
                 if guess_letter == self.solution.chars().nth(i) {
+                    if let Some(val) = self.keyboard_colors.get_mut(&guess_letter.unwrap()) {
+                        *val = Color::Green;
+                    }
+
                     colors.push(Color::Green)
                 } else if self.solution.contains(guess_letter.unwrap()) {
+                    if let Some(val) = self.keyboard_colors.get_mut(&guess_letter.unwrap()) {
+                        *val = Color::Yellow;
+                    }
+
                     colors.push(Color::Yellow)
                 } else {
+                    if let Some(val) = self.keyboard_colors.get_mut(&guess_letter.unwrap()) {
+                        *val = Color::Black;
+                    }
+
                     colors.push(Color::Reset)
                 }
             }

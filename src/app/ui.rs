@@ -156,8 +156,10 @@ where
         .split(row_chunks[2]);
 
     for i in 1..11 {
+        let key_color = app.state.keyboard_colors.get(&top_row_letters[i-1].chars().next().unwrap().to_ascii_lowercase()).unwrap();
+
         let keys = Paragraph::new(top_row_letters[i-1])
-            .style(Style::default().bg(Color::Reset))
+            .style(Style::default().bg(*key_color))
             .block(Block::default().borders(Borders::ALL))
             .alignment(Alignment::Center);
 
@@ -165,8 +167,10 @@ where
     }
 
     for i in 1..10 {
+        let key_color = app.state.keyboard_colors.get(&home_row_letters[i-1].chars().next().unwrap().to_ascii_lowercase()).unwrap();
+
         let keys = Paragraph::new(home_row_letters[i-1])
-            .style(Style::default().bg(Color::Reset))
+            .style(Style::default().bg(*key_color))
             .block(Block::default().borders(Borders::ALL))
             .alignment(Alignment::Center);
 
@@ -174,8 +178,10 @@ where
     }
 
     for i in 1..8 {
+        let key_color = app.state.keyboard_colors.get(&bottom_row_letters[i-1].chars().next().unwrap().to_ascii_lowercase()).unwrap();
+
         let keys = Paragraph::new(bottom_row_letters[i-1])
-            .style(Style::default().bg(Color::Reset))
+            .style(Style::default().bg(*key_color))
             .block(Block::default().borders(Borders::ALL))
             .alignment(Alignment::Center);
 
