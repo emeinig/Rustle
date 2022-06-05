@@ -58,7 +58,7 @@ impl App {
                     // Because we're only allowing letters (and not any
                     // graphemes), we can get away with just using the len method
                     // to count bytes rather than characters
-                    if word.len() == 5 {
+                    if word.len() == 5 && words::check_validity(&word) {
                         self.state.guesses.push(word);
 
                         AppState::check_word_status(&mut self.state);
