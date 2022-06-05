@@ -324,23 +324,3 @@ fn create_paragraph(text: String) -> Paragraph<'static> {
         .block(Block::default().borders(Borders::ALL))
         .alignment(Alignment::Center)
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn color_squares_works() {
-        let guess = String::from("bar");
-        let colors = vec![Color::Red, Color::Green, Color::Blue];
-        let expected_result = ListItem::new(Spans::from(vec![
-            Span::styled("b", Style::default().bg(Color::Red)),
-            Span::styled("a", Style::default().bg(Color::Green)),
-            Span::styled("r", Style::default().bg(Color::Blue)),
-        ]));
-
-        let result = color_squares(&guess, &colors);
-
-        assert_eq!(result, expected_result)
-    }
-}
