@@ -118,17 +118,16 @@ mod tests {
     #[test]
     fn check_status_works() {
         let mut test_state = AppState {
-            input: String::from(""),
-            solution: String::from("rebus"),
-            attempt: 0,
-            square_colors: vec![vec![
-                Color::Yellow,
-                Color::Reset,
-                Color::Yellow,
-                Color::Reset,
-                Color::Yellow,
-            ]],
-            guesses: vec![String::from("route")],
+        solution: String::from("rebus"),
+        guesses: vec![String::from("route")],
+        square_colors: vec![vec![
+            Color::Yellow,
+            Color::Reset,
+            Color::Reset,
+            Color::Yellow,
+            Color::Yellow,
+        ]],
+            ..AppState::default()
         };
 
         test_state.check_word_status();
